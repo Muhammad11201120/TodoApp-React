@@ -1,25 +1,62 @@
-import logo from './logo.svg';
-import './App.css';
-
+import "./App.css";
+import TodoList from "./TodoList";
+import { createTheme, ThemeProvider } from "@mui/material";
+import { green } from "@mui/material/colors";
+import { TodosContext } from "./Contexts/TodosContext";
+import { v4 as uuid4 } from "uuid";
+import { useContext, useState } from "react";
+const theme = createTheme({
+    typography: {
+        fontFamily: ["Rubik"],
+    },
+    palette: {
+        primary: {
+            main: "#3d5afe",
+        },
+        secondary: {
+            main: green[500],
+        },
+    },
+});
+let initialTodos = [
+    {
+        id: uuid4(),
+        title: "المهمة الأولى",
+        body: "هنا تفاصيل المهمة الأولى نتمنى تكون مفيدة",
+        isCompleted: false,
+    },
+    {
+        id: uuid4(),
+        title: "المهمة الثانية",
+        body: "هنا تفاصيل المهمة الأولى نتمنى تكون مفيدة",
+        isCompleted: false,
+    },
+    {
+        id: uuid4(),
+        title: "المهمة الثالثة",
+        body: "هنا تفاصيل المهمة الأولى نتمنى تكون مفيدة",
+        isCompleted: false,
+    },
+];
 function App() {
-  return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
-  );
+    const [todos, setTodos] = useState(initialTodos);
+    return (
+        <ThemeProvider theme={theme}>
+            <div
+                className="App"
+                style={{
+                    display: "flex",
+                    alignItems: "center",
+                    justifyContent: "center",
+                    height: "100vh",
+                }}
+            >
+                <TodosContext.Provider value={{ todos, setTodos }}>
+                    <TodoList />
+                </TodosContext.Provider>
+            </div>
+        </ThemeProvider>
+    );
 }
 
 export default App;
