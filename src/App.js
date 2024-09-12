@@ -4,14 +4,14 @@ import { createTheme, ThemeProvider } from "@mui/material";
 import { green } from "@mui/material/colors";
 import { TodosContext } from "./Contexts/TodosContext";
 import { v4 as uuid4 } from "uuid";
-import { useContext, useState } from "react";
+import { useState } from "react";
 const theme = createTheme({
     typography: {
         fontFamily: ["Rubik"],
     },
     palette: {
         primary: {
-            main: "#3d5afe",
+            main: "#db3e00",
         },
         secondary: {
             main: green[500],

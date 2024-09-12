@@ -4,26 +4,69 @@ import CardContent from "@mui/material/CardContent";
 import Button from "@mui/material/Button";
 import Typography from "@mui/material/Typography";
 import Container from "@mui/material/Container";
-import ButtonGroups from "./ButtonGroups";
 import Grid2 from "@mui/material/Unstable_Grid2";
 import Todo from "./Todo";
 import TextField from "@mui/material/TextField";
+import ToggleButton from "@mui/material/ToggleButton";
+import ToggleButtonGroup from "@mui/material/ToggleButtonGroup";
 import { v4 as uuid4 } from "uuid";
-import { useState } from "react";
+import { useState, useEffect, useMemo } from "react";
 import { useContext } from "react";
 import { TodosContext } from "./Contexts/TodosContext";
 
 export default function TodoList() {
     const [todoTitle, setTodoTitle] = useState("");
+    const [alignment, setAlignment] = useState("all");
     const { todos, setTodos } = useContext(TodosContext);
 
-    let todoJsx = todos.map((t) => {
+    //use effect hook//
+    useEffect(() => {
+        const storrageTodos = JSON.parse(localStorage.getItem("todos")) ?? [];
+        setTodos(storrageTodos);
+    }, [setTodos]);
+
+    let displayTodosList = [];
+    /****FILTERS*****/
+    const CompletedTodos = useMemo(() => {
+        return todos.filter((t) => {
+            return t.isCompleted;
+        });
+    }, [todos]);
+    const UnCompletedTodos = useMemo(() => {
+        return todos.filter((t) => {
+            return !t.isCompleted;
+        });
+    }, [todos]);
+    /*****End Filters*****/
+    if (alignment === "done") {
+        displayTodosList = CompletedTodos;
+    } else if (alignment === "undone") {
+        displayTodosList = UnCompletedTodos;
+    } else {
+        displayTodosList = todos;
+    }
+    let todoJsx = displayTodosList.map((t) => {
         return <Todo key={t.id} todo={t} />;
     });
 
+    const handleChange = (event) => {
+        setAlignment(event.target.value);
+    };
+    function handleDoneBtnClicked(e) {
+        setAlignment(e.target.value);
+    }
+    function handleAllBtnClicked(e) {
+        setAlignment(e.target.value);
+    }
+    function handleUnDoneeBtnClicked(e) {
+        setAlignment(e.target.value);
+    }
     return (
-        <Container maxWidth="md">
-            <Card sx={{ minWidth: 275 }}>
+        <Container maxWidth="sm">
+            <Card
+                sx={{ minWidth: 275 }}
+                style={{ maxHeight: "80vh", overflow: "scroll" }}
+            >
                 <CardContent>
                     <Typography
                         variant="h4"
@@ -36,7 +79,36 @@ export default function TodoList() {
                     >
                         قَائِـمة مَهَـامٌي
                         <hr></hr>
-                        <ButtonGroups />
+                        <ToggleButtonGroup
+                            color="primary"
+                            value={alignment}
+                            exclusive
+                            onChange={handleChange}
+                            aria-label="Platform"
+                            style={{ direction: "ltr" }}
+                        >
+                            <ToggleButton
+                                style={{ minWidth: "100px" }}
+                                value="undone"
+                                onClick={handleDoneBtnClicked}
+                            >
+                                غير المنجزة
+                            </ToggleButton>
+                            <ToggleButton
+                                style={{ minWidth: "100px" }}
+                                value="all"
+                                onClick={handleAllBtnClicked}
+                            >
+                                الكل
+                            </ToggleButton>
+                            <ToggleButton
+                                style={{ minWidth: "100px" }}
+                                value="done"
+                                onClick={handleUnDoneeBtnClicked}
+                            >
+                                المنجزة
+                            </ToggleButton>
+                        </ToggleButtonGroup>
                     </Typography>
                     {todoJsx}
                     <Grid2 container spacing={2} style={{ marginTop: "20px" }}>
@@ -62,9 +134,10 @@ export default function TodoList() {
                                     height: "100%",
                                     backgrounColor: "#3d5afe",
                                 }}
+                                disabled={todoTitle.length === 0 ? true : false}
                                 onClick={handleAddBtnClicked}
                             >
-                                إظافة
+                                إضـافة
                             </Button>
                         </Grid2>
                     </Grid2>
@@ -80,7 +153,9 @@ export default function TodoList() {
             body: "",
             isCompleted: false,
         };
-        setTodos([...todos, newTodo]);
+        const localStorageTodos = [...todos, newTodo];
+        setTodos(localStorageTodos);
+        localStorage.setItem("todos", JSON.stringify(localStorageTodos));
         setTodoTitle("");
     }
 }

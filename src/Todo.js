@@ -20,6 +20,10 @@ import { TodosContext } from "./Contexts/TodosContext";
 export default function Todo({ todo }) {
     const [openDeleteDialog, setDeleteOpenDialog] = useState(false);
     const [openUpdateDialog, setUpdateOpenDialog] = useState(false);
+    const [updatedTodo, setUpdatedTodo] = useState({
+        title: todo.title,
+        body: todo.body,
+    });
     const { todos, setTodos } = useContext(TodosContext);
     function handleCheckedClicked() {
         let newTodos = todos.map((t) => {
@@ -29,17 +33,18 @@ export default function Todo({ todo }) {
             return t;
         });
         setTodos(newTodos);
+        localStorage.setItem("todos", JSON.stringify(newTodos));
     }
     function handleConfirmDeletBtnClicked() {
         let newTodos = todos.filter((t) => {
             return t.id !== todo.id;
         });
         setTodos(newTodos);
+        localStorage.setItem("todos", JSON.stringify(newTodos));
     }
     function handleDeleteClicked() {
         setDeleteOpenDialog(true);
     }
-
     const handleDeleteClose = () => {
         setDeleteOpenDialog(false);
     };
@@ -48,6 +53,19 @@ export default function Todo({ todo }) {
     }
     function handleUpdateClicked() {
         setUpdateOpenDialog(true);
+    }
+    function handleConfirmEdidtBtnClicked(e) {
+        let updatedList = todos.map((t) => {
+            if (t.id === todo.id) {
+                return {
+                    ...t,
+                    title: updatedTodo.title,
+                    body: updatedTodo.body,
+                };
+            } else return t;
+        });
+        setTodos(updatedList);
+        localStorage.setItem("todos", JSON.stringify(updatedList));
     }
     return (
         <>
@@ -69,6 +87,7 @@ export default function Todo({ todo }) {
                 </DialogContent>
                 <DialogActions>
                     <Button
+                        color="success"
                         variant="outlined"
                         style={{
                             marginLeft: "10px",
@@ -83,7 +102,7 @@ export default function Todo({ todo }) {
                         onClick={handleConfirmDeletBtnClicked}
                         autoFocus
                     >
-                        تأكيد
+                        تأكـيد
                     </Button>
                 </DialogActions>
             </Dialog>
@@ -107,6 +126,7 @@ export default function Todo({ todo }) {
                 <DialogTitle>تعديل المهمٌة</DialogTitle>
                 <DialogContent>
                     <TextField
+                        value={updatedTodo.title}
                         autoFocus
                         required
                         id="name"
@@ -116,8 +136,15 @@ export default function Todo({ todo }) {
                         fullWidth
                         variant="standard"
                         style={{ marginBottom: "50px" }}
+                        onChange={(e) => {
+                            setUpdatedTodo({
+                                ...updatedTodo,
+                                title: e.target.value,
+                            });
+                        }}
                     />
                     <TextField
+                        value={updatedTodo.body}
                         required
                         id="name"
                         name="email"
@@ -125,12 +152,29 @@ export default function Todo({ todo }) {
                         type="text"
                         fullWidth
                         variant="standard"
+                        onChange={(e) => {
+                            setUpdatedTodo({
+                                ...updatedTodo,
+                                body: e.target.value,
+                            });
+                        }}
                     />
                 </DialogContent>
                 <DialogActions>
-                    <Button onClick={handleUpdateClose}>تراجع</Button>
-                    <Button color="secondary" type="submit">
-                        التأكيد
+                    <Button
+                        onClick={handleUpdateClose}
+                        variant="outlined"
+                        style={{ marginLeft: "10px" }}
+                    >
+                        تراجع
+                    </Button>
+                    <Button
+                        color="success"
+                        type="submit"
+                        onClick={handleConfirmEdidtBtnClicked}
+                        variant="outlined"
+                    >
+                        تأكـيد
                     </Button>
                 </DialogActions>
             </Dialog>
@@ -154,11 +198,28 @@ export default function Todo({ todo }) {
                                     style={{
                                         fontFamily: "Rubik",
                                         fontWeight: "500",
+                                        textDecoration: todo.isCompleted
+                                            ? "line-through"
+                                            : "none",
                                     }}
+                                    color={
+                                        todo.isCompleted ? "#db3e00" : "white"
+                                    }
                                 >
                                     {todo.title}
                                 </Typography>
-                                <Typography variant="h7" component="div">
+                                <Typography
+                                    variant="h7"
+                                    component="div"
+                                    style={{
+                                        textDecoration: todo.isCompleted
+                                            ? "line-through"
+                                            : "none",
+                                    }}
+                                    color={
+                                        todo.isCompleted ? "#db3e00" : "white"
+                                    }
+                                >
                                     {todo.body}
                                 </Typography>
                             </Grid2>
