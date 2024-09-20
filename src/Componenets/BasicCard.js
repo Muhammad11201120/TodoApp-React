@@ -90,7 +90,7 @@ export default function BasicCard() {
                         }}
                     >
                         <Typography gutterBottom style={{ fontSize: "45px" }}>
-                            {t("JEDDAH")}
+                            {t("AlRiyadh")}
                         </Typography>
                         <p style={{ margin: "0 20px", fontSize: "15px" }}>
                             {dateAndTime}
@@ -121,7 +121,7 @@ export default function BasicCard() {
                         style={{
                             display: "flex",
                             justifyContent: "center",
-                            gap: "20px",
+                            gap: "50px",
                         }}
                     >
                         <Typography variant="body1">
