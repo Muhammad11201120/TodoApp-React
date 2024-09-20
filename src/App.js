@@ -1,25 +1,32 @@
-import logo from './logo.svg';
-import './App.css';
+import "./App.css";
+//Material Ui Componenets
+import Container from "@mui/material/Container";
+import { createTheme, ThemeProvider } from "@mui/material";
+import BasicCard from "./Componenets/BasicCard";
+
+const theme = createTheme({
+    typography: {
+        fontFamily: ["IBM"],
+    },
+});
 
 function App() {
-  return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
-  );
+    return (
+        <ThemeProvider theme={theme}>
+            <Container
+                maxWidth="sm"
+                style={{
+                    display: "flex",
+                    alignItems: "center",
+                    flexDirection: "column",
+                    justifyContent: "center",
+                    marginTop: "20vh",
+                }}
+            >
+                <BasicCard />
+            </Container>
+        </ThemeProvider>
+    );
 }
 
 export default App;
